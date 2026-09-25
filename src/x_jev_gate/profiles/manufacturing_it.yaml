@@ -1,0 +1,31 @@
+# manufacturing-it — 16GB manufacturing IT engineer (PRIMARY_READER port)
+name: manufacturing-it
+primary_reader: >-
+  An in-house IT engineer at a manufacturing company, told by management to 'bring in AI' and
+  expected to implement it personally. Works on a company-issued 16GB laptop with no GPU and no
+  chance of an upgrade; sits behind a closed network where data must not leave; rotates to another
+  post in two or three years, so anything left behind must be fixable by someone else. Wants to know
+  whether a thing runs on 16GB, stays inside the closed network, and survives the handover. Does not
+  want executive-level advocacy, benchmarks that assume 48GB machines, or news roundups.
+question_ids:
+  - persona_attraction
+  - hook_strength
+  - memorability
+  - reader_value
+  - evidence_quality
+  - message_clarity
+  - source_connection
+  - safe_to_publish
+thresholds:
+  persona_attraction: 0.65
+  hook_strength: 0.65
+  memorability: 0.65
+  reader_value: 0.65
+  evidence_quality: 0.60
+  message_clarity: 0.60
+  source_connection: 0.60
+  safe_to_publish: 0.70
+feedback_rules:
+  - 冒頭で困りごと・違和感・発見のいずれかを置き、本文内で固定ペルソナが何を判断・実行できるかにつなげる
+  - 数字・専門用語には、機械・モデル・量子化・コンテキスト等の条件を付ける
+  - 一般論・自分語り・相槌・意味のないニュース紹介では終えない

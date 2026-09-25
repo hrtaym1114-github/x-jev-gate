@@ -1,0 +1,29 @@
+# generic-tech — slightly broader hands-on tech reader
+name: generic-tech
+primary_reader: >-
+  A hands-on software or IT engineer who evaluates tools under real constraints: limited hardware,
+  closed or semi-closed networks, and a need for reproducible steps another teammate can follow.
+  Prefers concrete measurements, failure modes, and next actions over generic AI advocacy or
+  executive-level trend pieces.
+question_ids:
+  - persona_attraction
+  - hook_strength
+  - memorability
+  - reader_value
+  - evidence_quality
+  - message_clarity
+  - source_connection
+  - safe_to_publish
+thresholds:
+  persona_attraction: 0.65
+  hook_strength: 0.65
+  memorability: 0.65
+  reader_value: 0.65
+  evidence_quality: 0.60
+  message_clarity: 0.60
+  source_connection: 0.60
+  safe_to_publish: 0.70
+feedback_rules:
+  - Open with a concrete problem, surprise, or finding the reader can act on
+  - Bound numbers with hardware, model, or measurement conditions
+  - End with a next check or decision, not a generic takeaway
