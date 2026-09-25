@@ -10,13 +10,14 @@ A small public gate for X drafts: Layer A hard-blocks secret-looking strings loc
 
 ## 使い方（動画）
 
-約54秒の解説動画（日本語 UI / コマンドはそのまま英語）:
+約54秒の解説（日本語 UI / コマンドはそのまま英語）。
 
-[![x-jev-gate howto strip](docs/media/x-jev-gate-howto-strip.png)](docs/media/x-jev-gate-howto.mp4)
+GitHub のリポジトリ内プレビューは大きな MP4 を再生できないことがあるので、**ページ上では GIF**、本編は **Release の MP4** を使う。
 
-- ▶️ [MP4を見る](docs/media/x-jev-gate-howto.mp4)（1920×1080 / 30fps / 無音）
-- 🎞️ [GIFプレビュー](docs/media/x-jev-gate-howto.gif)
-- Release 資産: [`x-jev-gate-howto.mp4` on v0.1.0](https://github.com/hrtaym1114-github/x-jev-gate/releases/tag/v0.1.0)
+![x-jev-gate 使い方プレビュー](docs/media/x-jev-gate-howto.gif)
+
+**[▶ 本編 MP4（1080p・無音）を開く](https://github.com/hrtaym1114-github/x-jev-gate/releases/download/v0.1.0/x-jev-gate-howto.mp4)**  
+ストーリーボード: [strip](docs/media/x-jev-gate-howto-strip.png) · [Release v0.1.0](https://github.com/hrtaym1114-github/x-jev-gate/releases/tag/v0.1.0)
 
 ### 4ステップ
 
