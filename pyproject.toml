@@ -23,7 +23,7 @@ dev = ["pytest>=7.0"]
 x-jev-gate = "x_jev_gate.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/Bodila51/x-jev-gate"
+Homepage = "https://github.com/hrtaym1114-github/x-jev-gate"
 Related = "https://github.com/Bodila51/grok-bot-jev"
 
 [tool.setuptools.packages.find]
