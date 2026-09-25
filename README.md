@@ -10,7 +10,7 @@ A small public gate for X drafts: Layer A hard-blocks secret-looking strings loc
 
 ## 使い方（動画）
 
-約36秒の解説動画（日本語 UI / コマンドはそのまま英語）:
+約54秒の解説動画（日本語 UI / コマンドはそのまま英語）:
 
 [![x-jev-gate howto strip](docs/media/x-jev-gate-howto-strip.png)](docs/media/x-jev-gate-howto.mp4)
 
