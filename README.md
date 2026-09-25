@@ -138,4 +138,4 @@ Override thresholds with `--threshold-file thresholds.yaml`.
 
 ## License
 
-MIT © 歩 原田
+MIT © hrtaym1114
