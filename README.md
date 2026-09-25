@@ -8,6 +8,26 @@ A small public gate for X drafts: Layer A hard-blocks secret-looking strings loc
 - No long LLM critique. Cheap, fast, explainable Noul scores.
 - Sibling of [`grok-bot-jev`](https://github.com/Bodila51/grok-bot-jev) (Grok Bot router). This package is **post-gate specialized**.
 
+## 使い方（動画）
+
+約36秒の解説動画（日本語 UI / コマンドはそのまま英語）:
+
+[![x-jev-gate howto strip](docs/media/x-jev-gate-howto-strip.png)](docs/media/x-jev-gate-howto.mp4)
+
+- ▶️ [MP4を見る](docs/media/x-jev-gate-howto.mp4)（1920×1080 / 30fps / 無音）
+- 🎞️ [GIFプレビュー](docs/media/x-jev-gate-howto.gif)
+- Release 資産: [`x-jev-gate-howto.mp4` on v0.1.0](https://github.com/hrtaym1114-github/x-jev-gate/releases/tag/v0.1.0)
+
+### 4ステップ
+
+1. **Install** — `pip install git+https://github.com/hrtaym1114-github/x-jev-gate.git`
+2. **API key** — `export TYPESAFE_API_KEY=...`（shell / secret manager のみ。コミット禁止）
+3. **Run** — `x-jev-gate --text '...'` またはファイル / stdin
+4. **結果** — **PASS**（Noul スコアがしきい値以上 → exit 0）/ **BLOCK**（Layer A 秘密検知やしきい値割れ → exit 1）
+
+キー無しのスモーク: `x-jev-gate --dry-run-offline --text 'smoke test body'`  
+※ 自動投稿はしません。判定のみです。
+
 ## What is Jev?
 
 Jev（TypeSafe System One）は、定義済みの yes/no（Noul）質問に対して確率スコアを返す安い判断層です。生成モデルに長文批評させる代わりに、「ペルソナに刺さるか」「フックがあるか」「公開してよいか」などを数値で返し、しきい値で gate します。
@@ -15,6 +35,9 @@ Jev（TypeSafe System One）は、定義済みの yes/no（Noul）質問に対�
 ## Install
 
 ```bash
+# from GitHub (recommended for users)
+pip install git+https://github.com/hrtaym1114-github/x-jev-gate.git
+
 # editable (recommended while developing)
 pip install -e ".[dev]"
 # or with uv
