@@ -1,4 +1,4 @@
-"""Layer B: TypeSafe Jev System One judgment (env key only)."""
+"""Layer B: System One judgment using cloud TypeSafe or local Ollaya."""
 
 from __future__ import annotations
 
@@ -31,22 +31,47 @@ class JudgeResult:
     request_id: str | None
 
 
-def make_client(env: Mapping[str, str] | None = None) -> TypeSafeClient:
-    """Build a TypeSafe client from TYPESAFE_API_KEY only.
+def make_client(
+    *,
+    backend: str = "typesafe",
+    model: str | None = None,
+    base_url: str | None = None,
+    env: Mapping[str, str] | None = None,
+) -> TypeSafeClient:
+    """Build the SDK client for the selected backend.
 
     Never reads vault secret files. Never logs the key.
     """
+    if backend not in {"typesafe", "ollaya"}:
+        raise ValueError(f"unsupported backend: {backend}")
     source = os.environ if env is None else env
     api_key = (source.get("TYPESAFE_API_KEY") or "").strip()
-    if not api_key:
+    if model is None:
+        model = source.get("TYPESAFE_DEFAULT_MODEL") or None
+    if base_url is None:
+        base_url = source.get("TYPESAFE_BASE_URL") or None
+    if backend == "ollaya":
+        api_key = api_key or "local"
+        if model is None:
+            model = "laya"
+        if base_url is None:
+            host = source.get("OLLAYA_HOST") or "127.0.0.1:11435"
+            base_url = host if "://" in host else f"http://{host}"
+    elif not api_key:
         raise JudgeUnavailable(
             "TYPESAFE_API_KEY is not set (export it in the environment; "
             "this tool never reads vault secret files)"
         )
+    options: dict[str, Any] = {}
+    if model is not None:
+        options["model"] = model
+    if base_url is not None:
+        options["base_url"] = base_url
     return TypeSafeClient(
         api_key=api_key,
         retry=RetryPolicy(max_retries=MAX_RETRIES),
         timeout=REQUEST_TIMEOUT_SECONDS,
+        **options,
     )
 
 

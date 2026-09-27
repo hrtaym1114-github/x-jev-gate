@@ -45,7 +45,7 @@ pip install -e ".[dev]"
 uv pip install -e ".[dev]"
 ```
 
-Requires Python ≥ 3.10 and a TypeSafe API key for live judgment.
+Requires Python ≥ 3.10 and a TypeSafe API key for cloud judgment.
 
 ```bash
 export TYPESAFE_API_KEY=...   # secret manager / shell env only
@@ -53,6 +53,35 @@ export TYPESAFE_API_KEY=...   # secret manager / shell env only
 ```
 
 Never commit the key. The CLI never logs `TYPESAFE_API_KEY`.
+
+## Local with Ollaya
+
+Install Ollaya separately using the instructions at [ollaya.dev](https://ollaya.dev/)
+(not affiliated). Start its server in another terminal and pull `laya`:
+
+```bash
+ollaya serve
+# in another terminal:
+ollaya pull laya
+x-jev-gate draft.md --backend ollaya --model laya --json
+```
+
+The local backend uses the existing TypeSafe SDK with Ollaya's compatible
+`/v1/systemone` API. x-jev-gate does not bundle Ollaya or start its server.
+
+| Environment variable | Meaning |
+|----------------------|---------|
+| `X_JEV_GATE_BACKEND` | `typesafe` (default) or `ollaya`; overridden by `--backend` |
+| `TYPESAFE_BASE_URL` | Base URL override; takes precedence over `OLLAYA_HOST` |
+| `OLLAYA_HOST` | Ollaya host or URL; host-only values get `http://`; default `http://127.0.0.1:11435` |
+| `TYPESAFE_API_KEY` | Optional locally (defaults to `local`); required for cloud |
+| `TYPESAFE_DEFAULT_MODEL` | Model name; overridden by `--model`; Ollaya defaults to `laya` |
+
+Open models do not imply Jev cloud quality; thresholds may need retuning.
+If Ollaya is down, judgment fails closed with exit **2**, unless
+`--allow-offline-soft` is supplied (warning and exit 0).
+JSON and human summaries include the selected backend and model; the cloud model
+is `null` in JSON when left to the SDK default.
 
 ## Usage
 
