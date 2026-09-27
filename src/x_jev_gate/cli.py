@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Mapping, TextIO
@@ -60,6 +61,11 @@ def _human_summary(result: Mapping[str, Any]) -> str:
         parts.append(f"{label} {float(value):.2f}")
     score_line = " / ".join(parts) if parts else "(no scores)"
     lines = [f"{status} | {score_line}"]
+    if "backend" in result:
+        lines.append(f"backend: {result.get('backend')}")
+    if "model" in result:
+        model = result.get("model")
+        lines.append(f"model: {model if model is not None else '(default)'}")
     failures = result.get("failures") or []
     if failures:
         lines.append("failures:")
@@ -84,6 +90,7 @@ def _emit(result: dict[str, Any], *, as_json: bool, stream: TextIO | None = None
 
 
 def run_gate(args: argparse.Namespace) -> int:
+    backend_meta = {"backend": args.backend, "model": args.model}
     try:
         body = _read_input(args)
     except (OSError, ValueError) as exc:
@@ -102,6 +109,7 @@ def run_gate(args: argparse.Namespace) -> int:
     hard = check_hard_rules(body)
     if hard:
         result = {
+            **backend_meta,
             "status": "block",
             "layer": "A",
             "profile": profile.name,
@@ -127,7 +135,7 @@ def run_gate(args: argparse.Namespace) -> int:
         meta = {"request_id": "dry-run-offline", "latency_ms": 0.0}
     else:
         try:
-            client = make_client()
+            client = make_client(backend=args.backend, model=args.model, base_url=None)
             judgment = run_judgment(
                 client,
                 profile.build_state(body),
@@ -137,6 +145,7 @@ def run_gate(args: argparse.Namespace) -> int:
             print(f"JEV unavailable: {exc}", file=sys.stderr)
             if args.allow_offline_soft:
                 soft = {
+                    **backend_meta,
                     "status": "unavailable",
                     "layer": "B",
                     "profile": profile.name,
@@ -165,6 +174,7 @@ def run_gate(args: argparse.Namespace) -> int:
     failures = evaluate_scores(scores, profile, strict=args.strict)
     passed = not failures
     result = {
+        **backend_meta,
         "status": "pass" if passed else "block",
         "layer": "B",
         "profile": profile.name,
@@ -193,6 +203,17 @@ def build_parser() -> argparse.ArgumentParser:
         "file",
         nargs="?",
         help="path to draft text (or vault markdown with --format vault-md)",
+    )
+    parser.add_argument(
+        "--backend",
+        choices=("typesafe", "ollaya"),
+        default=os.environ.get("X_JEV_GATE_BACKEND", "typesafe"),
+        help="judgment backend (env: X_JEV_GATE_BACKEND; default: typesafe)",
+    )
+    parser.add_argument(
+        "--model",
+        default=os.environ.get("TYPESAFE_DEFAULT_MODEL") or None,
+        help="model name (env: TYPESAFE_DEFAULT_MODEL; Ollaya default: laya)",
     )
     parser.add_argument("--text", help="draft text as a CLI argument")
     parser.add_argument(
@@ -253,6 +274,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.backend not in {"typesafe", "ollaya"}:
+        parser.error("backend must be typesafe or ollaya (check X_JEV_GATE_BACKEND)")
+    if args.backend == "ollaya" and args.model is None:
+        args.model = "laya"
     return run_gate(args)
 
 
