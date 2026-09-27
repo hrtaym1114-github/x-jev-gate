@@ -22,12 +22,14 @@ GitHub のリポジトリ内プレビューは大きな MP4 を再生できな�
 ### 4ステップ
 
 1. **Install** — `pip install git+https://github.com/hrtaym1114-github/x-jev-gate.git`
-2. **API key** — `export TYPESAFE_API_KEY=...`（shell / secret manager のみ。コミット禁止）
-3. **Run** — `x-jev-gate --text '...'` またはファイル / stdin
-4. **結果** — **PASS**（Noul スコアがしきい値以上 → exit 0）/ **BLOCK**（Layer A 秘密検知やしきい値割れ → exit 1）
+2. **判定先を選ぶ**
+   - **Cloud（既定）** — `export TYPESAFE_API_KEY=...`（shell / secret manager のみ。コミット禁止）
+   - **Local（Ollaya）** — [ollaya.dev](https://ollaya.dev/) で `ollaya serve` + `ollaya pull laya`（キー不要・既定 `local`）。詳細は [Local with Ollaya](#local-with-ollaya)
+3. **Run** — `x-jev-gate --text '...'` または `--backend ollaya`
+4. **結果** — **PASS**（exit 0）/ **BLOCK**（exit 1）/ 判定不可（exit **2**・fail closed）
 
 キー無しのスモーク: `x-jev-gate --dry-run-offline --text 'smoke test body'`  
-※ 自動投稿はしません。判定のみです。
+※ 自動投稿はしません。判定のみです。Offer A / 販売リンクはありません。
 
 ## What is Jev?
 
@@ -56,32 +58,42 @@ Never commit the key. The CLI never logs `TYPESAFE_API_KEY`.
 
 ## Local with Ollaya
 
-Install Ollaya separately using the instructions at [ollaya.dev](https://ollaya.dev/)
-(not affiliated). Start its server in another terminal and pull `laya`:
+閉域ノートやキー無しの現場向けに、[Ollaya](https://ollaya.dev/)（非提携）上のローカル System One へ繋げます。  
+x-jev-gate は Ollaya を**同梱・自動起動しません**。別プロセスで立ててから `--backend ollaya` します。
+
+[![Ollaya setup / run](docs/media/x-jev-gate-ollaya-strip.png)](docs/media/x-jev-gate-ollaya-howto.gif)
+
+- 🎞️ [GIF](docs/media/x-jev-gate-ollaya-howto.gif) · Release: [v0.2.0](https://github.com/hrtaym1114-github/x-jev-gate/releases/tag/v0.2.0)
+
+### オペ手順（最短）
 
 ```bash
+# 端末 A
 ollaya serve
-# in another terminal:
 ollaya pull laya
+
+# 端末 B（この CLI）
 x-jev-gate draft.md --backend ollaya --model laya --json
+# または環境変数:
+# export X_JEV_GATE_BACKEND=ollaya
+# export TYPESAFE_DEFAULT_MODEL=laya
 ```
 
-The local backend uses the existing TypeSafe SDK with Ollaya's compatible
-`/v1/systemone` API. x-jev-gate does not bundle Ollaya or start its server.
+既定の接続先は `http://127.0.0.1:11435`。キー未設定時は `local`。  
+TypeSafe SDK 経由で Ollaya 互換の `/v1/systemone` を叩きます。
 
-| Environment variable | Meaning |
-|----------------------|---------|
-| `X_JEV_GATE_BACKEND` | `typesafe` (default) or `ollaya`; overridden by `--backend` |
-| `TYPESAFE_BASE_URL` | Base URL override; takes precedence over `OLLAYA_HOST` |
-| `OLLAYA_HOST` | Ollaya host or URL; host-only values get `http://`; default `http://127.0.0.1:11435` |
-| `TYPESAFE_API_KEY` | Optional locally (defaults to `local`); required for cloud |
-| `TYPESAFE_DEFAULT_MODEL` | Model name; overridden by `--model`; Ollaya defaults to `laya` |
+| Environment variable | Meaning / 意味 |
+|----------------------|----------------|
+| `X_JEV_GATE_BACKEND` | `typesafe`（既定）または `ollaya`。`--backend` が優先 |
+| `TYPESAFE_BASE_URL` | Base URL 上書き（`OLLAYA_HOST` より優先） |
+| `OLLAYA_HOST` | ホストまたは URL。ホストだけなら `http://` 付与。既定 `http://127.0.0.1:11435` |
+| `TYPESAFE_API_KEY` | ローカルでは任意（未設定→`local`）。クラウドでは必須 |
+| `TYPESAFE_DEFAULT_MODEL` | モデル名。`--model` が優先。Ollaya 既定は `laya` |
 
-Open models do not imply Jev cloud quality; thresholds may need retuning.
-If Ollaya is down, judgment fails closed with exit **2**, unless
-`--allow-offline-soft` is supplied (warning and exit 0).
-JSON and human summaries include the selected backend and model; the cloud model
-is `null` in JSON when left to the SDK default.
+**注意（オペ向け）**
+- オープンモデル ≠ TypeSafe クラウドの Jev 品質。しきい値の再調整が必要なことがあります。
+- Ollaya 停止・接続拒否は **exit 2**（fail closed）。`--allow-offline-soft` で警告＋exit 0 にできます（非推奨）。
+- JSON / 人間向け要約に `backend` と `model` が出ます。クラウドでモデル未指定のとき JSON の `model` は `null` です。
 
 ## Usage
 
@@ -97,6 +109,9 @@ cat draft.txt | x-jev-gate --stdin --strict
 
 # vault markdown (## 投稿文 fenced block)
 x-jev-gate path/to/draft.md --format vault-md
+
+# local Ollaya (server must already be running)
+x-jev-gate --text "16GBノートで測った結果…" --backend ollaya --model laya --json
 
 # CI smoke without network
 x-jev-gate --dry-run-offline --text "smoke test body"
@@ -135,7 +150,7 @@ Override thresholds with `--threshold-file thresholds.yaml`.
 |------|---------|
 | `0` | pass（または `--shadow`） |
 | `1` | Layer A hard block、または Jev しきい値割れ |
-| `2` | Jev 利用不可（キー無し・API障害）。**既定は fail closed** |
+| `2` | Jev 利用不可（クラウド: キー無し・API障害 / ローカル: Ollaya 停止など）。**既定は fail closed** |
 
 `--allow-offline-soft` を付けると、利用不可時に警告のみで exit 0 にできます（非推奨）。
 
@@ -146,7 +161,7 @@ Override thresholds with `--threshold-file thresholds.yaml`.
   ├─ Layer A  Hard fail-closed（ローカル）
   │     APIキー様 / password= / /Users/ パス
   │     → hit なら即 exit 1（Jev を呼ばない）
-  ├─ Layer B  Jev System One（TYPESAFE_API_KEY）
+  ├─ Layer B  Jev System One（--backend typesafe|ollaya）
   │     複数 Noul → しきい値比較
   └─ Layer C  人間可读要約 + --json
 ```
