@@ -1,5 +1,7 @@
 # x-jev-gate
 
+English: [README.en.md](README.en.md)
+
 **TypeSafe Jev（System One）に「出してよいか」を確率で聞ける、X下書き用の判定CLI。**
 
 A small public gate for X drafts: Layer A hard-blocks secret-looking strings locally, then Layer B asks [TypeSafe Jev](https://docs.typesafe.ai) defined Noul questions and exits non-zero when scores miss thresholds.
