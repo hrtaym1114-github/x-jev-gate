@@ -31,7 +31,7 @@ GitHub のリポジトリ内プレビューは大きな MP4 を再生できな�
 4. **結果** — **PASS**（exit 0）/ **BLOCK**（exit 1）/ 判定不可（exit **2**・fail closed）
 
 キー無しのスモーク: `x-jev-gate --dry-run-offline --text 'smoke test body'`  
-※ 自動投稿はしません。判定のみです。Offer A / 販売リンクはありません。
+※ 自動投稿はしません。判定のみです。販売オファー / 購入リンクはありません。
 
 ## What is Jev?
 
@@ -53,7 +53,7 @@ Requires Python ≥ 3.10 and a TypeSafe API key for cloud judgment.
 
 ```bash
 export TYPESAFE_API_KEY=...   # secret manager / shell env only
-# このツールは vault の秘密ファイルを読みません
+# このツールは秘密の資格情報ファイルを読みません
 ```
 
 Never commit the key. The CLI never logs `TYPESAFE_API_KEY`.
@@ -109,7 +109,7 @@ x-jev-gate --text "16GBノートで測った結果…" --json
 # stdin
 cat draft.txt | x-jev-gate --stdin --strict
 
-# vault markdown (## 投稿文 fenced block)
+# ## 投稿文 の fenced block を持つ下書き markdown（--format vault-md）
 x-jev-gate path/to/draft.md --format vault-md
 
 # local Ollaya (server must already be running)
@@ -126,7 +126,7 @@ x-jev-gate draft.txt --shadow --json
 
 | Profile | Reader |
 |---------|--------|
-| `manufacturing-it` (default) | 製造業IT・16GB閉域ノートの固定ペルソナ（ops `PRIMARY_READER` を移植） |
+| `manufacturing-it` (default) | 製造業IT・16GB閉域ノートの固定ペルソナ |
 | `generic-tech` | もう少し広い hands-on 技術者 |
 
 Override thresholds with `--threshold-file thresholds.yaml`.
@@ -165,7 +165,7 @@ Override thresholds with `--threshold-file thresholds.yaml`.
   │     → hit なら即 exit 1（Jev を呼ばない）
   ├─ Layer B  Jev System One（--backend typesafe|ollaya）
   │     複数 Noul → しきい値比較
-  └─ Layer C  人間可读要約 + --json
+  └─ Layer C  人間可読要約 + --json
 ```
 
 ## Relation to grok-bot-jev

@@ -31,7 +31,7 @@ Storyboard: [strip](docs/media/x-jev-gate-howto-strip.png) · [Release v0.1.0](h
 4. **Result** — **PASS** (exit 0) / **BLOCK** (exit 1) / evaluation unavailable (exit **2**, fail closed)
 
 Smoke test without a key: `x-jev-gate --dry-run-offline --text 'smoke test body'`  
-Note: This does not post automatically. Evaluation only. There is no Offer A or sales link.
+Note: This does not post automatically. Evaluation only. There is no sales offer or purchase link.
 
 ## What is Jev?
 
@@ -53,7 +53,7 @@ Requires Python ≥ 3.10 and a TypeSafe API key for cloud judgment.
 
 ```bash
 export TYPESAFE_API_KEY=...   # secret manager / shell env only
-# このツールは vault の秘密ファイルを読みません
+# This tool does not read secret credential files
 ```
 
 Never commit the key. The CLI never logs `TYPESAFE_API_KEY`.
@@ -70,13 +70,13 @@ x-jev-gate **does not bundle or automatically start Ollaya**. Start it as a sepa
 ### Quick setup and operation
 
 ```bash
-# 端末 A
+# terminal A
 ollaya serve
 ollaya pull laya
 
-# 端末 B（この CLI）
+# terminal B (this CLI)
 x-jev-gate draft.md --backend ollaya --model laya --json
-# または環境変数:
+# or via environment variables:
 # export X_JEV_GATE_BACKEND=ollaya
 # export TYPESAFE_DEFAULT_MODEL=laya
 ```
@@ -109,7 +109,7 @@ x-jev-gate --text "16GBノートで測った結果…" --json
 # stdin
 cat draft.txt | x-jev-gate --stdin --strict
 
-# vault markdown (## 投稿文 fenced block)
+# markdown draft with a ## 投稿文 fenced block (--format vault-md)
 x-jev-gate path/to/draft.md --format vault-md
 
 # local Ollaya (server must already be running)
@@ -126,7 +126,7 @@ x-jev-gate draft.txt --shadow --json
 
 | Profile | Reader |
 |---------|--------|
-| `manufacturing-it` (default) | A fixed persona for manufacturing IT and 16GB laptops on isolated networks (ported from ops `PRIMARY_READER`) |
+| `manufacturing-it` (default) | A fixed persona for manufacturing IT and 16GB laptops on isolated networks |
 | `generic-tech` | A somewhat broader audience of hands-on technical practitioners |
 
 Override thresholds with `--threshold-file thresholds.yaml`.
@@ -159,13 +159,13 @@ Adding `--allow-offline-soft` makes unavailability produce only a warning and ex
 ## Architecture
 
 ```
-入力（下書き）
-  ├─ Layer A  Hard fail-closed（ローカル）
-  │     APIキー様 / password= / /Users/ パス
-  │     → hit なら即 exit 1（Jev を呼ばない）
-  ├─ Layer B  Jev System One（--backend typesafe|ollaya）
-  │     複数 Noul → しきい値比較
-  └─ Layer C  人間可读要約 + --json
+Draft input
+  ├─ Layer A  Hard fail-closed (local)
+  │     API-key-like / password= / /Users/ paths
+  │     → on hit, exit 1 immediately (Jev not called)
+  ├─ Layer B  Jev System One (--backend typesafe|ollaya)
+  │     multiple Noul → threshold compare
+  └─ Layer C  human-readable summary + --json
 ```
 
 ## Relation to grok-bot-jev
