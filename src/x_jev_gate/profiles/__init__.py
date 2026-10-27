@@ -10,7 +10,7 @@ from typing import Any
 import yaml
 from typesafe_sdk import Noul
 
-# Ported from typesafe_judge.content_fit.PRIMARY_READER
+# Reader profile for a manufacturing IT engineer on a 16GB machine.
 MANUFACTURING_IT_READER = (
     "An in-house IT engineer at a manufacturing company, told by management to 'bring in AI' and "
     "expected to implement it personally. Works on a company-issued 16GB laptop with no GPU and no "

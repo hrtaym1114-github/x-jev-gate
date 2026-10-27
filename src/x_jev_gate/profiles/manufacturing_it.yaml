@@ -1,4 +1,4 @@
-# manufacturing-it — 16GB manufacturing IT engineer (PRIMARY_READER port)
+# Reader profile for a manufacturing IT engineer on a 16GB machine.
 name: manufacturing-it
 primary_reader: >-
   An in-house IT engineer at a manufacturing company, told by management to 'bring in AI' and
