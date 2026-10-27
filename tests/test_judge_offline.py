@@ -14,7 +14,13 @@ from x_jev_gate.judge import (
     offline_fixture_scores,
     run_judgment,
 )
-from x_jev_gate.profiles import evaluate_scores, load_profile
+from x_jev_gate.profiles import (
+    DEFAULT_THRESHOLDS,
+    MANUFACTURING_IT_READER,
+    _MFG_RULES,
+    evaluate_scores,
+    load_profile,
+)
 
 
 class FakeAnswer:
@@ -160,3 +166,38 @@ def test_safe_to_publish_in_profile_questions() -> None:
     questions = profile.build_questions()
     assert "safe_to_publish" in questions
     assert len(questions) == 8
+
+
+def test_manufacturing_it_reader_matches_yaml_and_questions() -> None:
+    """YAML overlay overrides the constant; both must stay the same reader."""
+    profile = load_profile("manufacturing-it")
+    assert profile.primary_reader == MANUFACTURING_IT_READER
+    assert profile.feedback_rules == _MFG_RULES
+    assert "local-LLM-first" in profile.primary_reader
+    assert "worth not missing" in profile.primary_reader
+    assert "news roundup" not in profile.primary_reader.lower()
+    assert "data must not leave" not in profile.primary_reader
+    assert "company-issued 16GB" not in profile.primary_reader
+    assert profile.thresholds == {k: DEFAULT_THRESHOLDS[k] for k in profile.question_ids}
+
+    questions = profile.build_questions()
+    reader_value = questions["reader_value"]
+    assert "without a decision or action is not enough" not in reader_value.instructions
+    assert "watch tomorrow" in reader_value.instructions
+    assert "costly to miss" in reader_value.criteria["true"]
+    assert "interchangeable hype" in reader_value.criteria["false"]
+
+    persona = questions["persona_attraction"]
+    assert "well-sourced news" in persona.criteria["true"]
+    assert "self-focused diary" in persona.criteria["false"]
+
+    hook = questions["hook_strength"]
+    assert "concrete consequence" in hook.instructions
+    assert "X published an article" in hook.criteria["false"]
+    assert "abstract advice" in hook.criteria["false"]
+
+    # Unchanged questions keep their previous bar.
+    assert questions["memorability"].instructions.startswith(
+        "Judge whether the post contains one concrete detail"
+    )
+    assert "overclaim" in questions["evidence_quality"].criteria["true"]

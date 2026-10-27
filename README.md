@@ -124,7 +124,7 @@ x-jev-gate draft.txt --shadow --json
 
 | Profile | Reader |
 |---------|--------|
-| `manufacturing-it` (default) | 製造業IT・16GB閉域ノートの固定ペルソナ（ops `PRIMARY_READER` を移植） |
+| `manufacturing-it` (default) | ローカルLLM寄りの生成AI実務者。社内でAI導入・実用を推進する人（社内IT / DX / ハンズオン）。ニュース・OSS・インシデントも対象。閉域や16GBノートは既定ではない |
 | `generic-tech` | もう少し広い hands-on 技術者 |
 
 Override thresholds with `--threshold-file thresholds.yaml`.
