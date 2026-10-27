@@ -1,12 +1,13 @@
-# manufacturing-it — 16GB manufacturing IT engineer (PRIMARY_READER port)
+# manufacturing-it — local-LLM-first practitioner who drives AI use at work
 name: manufacturing-it
 primary_reader: >-
-  An in-house IT engineer at a manufacturing company, told by management to 'bring in AI' and
-  expected to implement it personally. Works on a company-issued 16GB laptop with no GPU and no
-  chance of an upgrade; sits behind a closed network where data must not leave; rotates to another
-  post in two or three years, so anything left behind must be fixable by someone else. Wants to know
-  whether a thing runs on 16GB, stays inside the closed network, and survives the handover. Does not
-  want executive-level advocacy, benchmarks that assume 48GB machines, or news roundups.
+  A practitioner interested in generative AI with a local-LLM-first bias, who at work can promote
+  or drive AI introduction and practical use (in-house IT, DX, or a hands-on champion, not an
+  executive trend consumer). They care about facts that change what they check tomorrow on their
+  stack: local inference, agent operations, and OSS tooling. Hardware and network constraints vary
+  by workplace, so neither a closed network nor a fixed 16GB laptop is the default setting. They
+  do not want pure executive advocacy, diary posts, or generic AI hype. They do want attractive
+  latest news, OSS, and incidents that are actionable or worth not missing for practitioners.
 question_ids:
   - persona_attraction
   - hook_strength
@@ -26,6 +27,8 @@ thresholds:
   source_connection: 0.60
   safe_to_publish: 0.70
 feedback_rules:
-  - 冒頭で困りごと・違和感・発見のいずれかを置き、本文内で固定ペルソナが何を判断・実行できるかにつなげる
-  - 数字・専門用語には、機械・モデル・量子化・コンテキスト等の条件を付ける
-  - 一般論・自分語り・相槌・意味のないニュース紹介では終えない
+  - 冒頭は、読者のマシンやスタックで何が壊れる・速くなる・可能になるかを置く（「〜という記事を出しています」のような柔らかい導入では始めない）
+  - 数字・専門用語には、ハードウェア・モデル・同時負荷・量子化・コンテキスト等の条件を付ける
+  - 閉域は既定の前提にしない。下書き自身が閉域だと書いているときだけ、その条件として扱う
+  - 説教で終えない。具体的な次の確認か、実務者にとって見逃すと損する事実で終えてよい
+  - 日記や自分語りでは終えない
