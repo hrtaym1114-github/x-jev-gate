@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import re
 
-# Patterns inspired by the vault x-jev-gate SECRET_PATTERNS, narrowed
-# to API-key-like, credential assignments, and /Users/ path leaks only.
+# Patterns deliberately narrowed to API-key-like strings, credential assignments,
+# and /Users/ path leaks only.
 _SECRET_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (
         re.compile(
